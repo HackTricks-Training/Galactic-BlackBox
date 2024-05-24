@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error = "Invalid credentials.";
         }
     } catch (Exception $e) {
+        # Remove this to make it more difficult
         $error = "An error occurred: " . $e->getMessage();
     }
 }
