@@ -24,14 +24,14 @@ class User(UserMixin):
 def load_user(username):
     try:
         response = dynamodb.get_item(
-            TableName='users',
+            TableName='blackbox_lab_3',
             Key={
-                'username': {'S': username}
+                'Username': {'S': username}
             }
         )
         if 'Item' in response:
             item = response['Item']
-            return User(username=item['username']['S'], password=item['password']['S'])
+            return User(username=item['Username']['S'], password=item['password']['S'])
     except Exception as e:
         print(e)
     return None
