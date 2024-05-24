@@ -1,0 +1,65 @@
+body {
+    font-family: 'Lucida Console', Monaco, monospace;
+    background-color: #000022;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: rgba(0, 0, 34, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00f0ff;
+    width: 80%;
+    max-width: 600px;
+}
+
+h2 {
+    color: #00f0ff;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="password"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #000033;
+    color: #ffffff;
+}
+
+button {
+    padding: 10px;
+    background: #00f0ff;
+    color: #000022;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background: #007acc;
+}
+
+.error, .result {
+    margin-top: 10px;
+    color: #ff0000;
+    text-align: center;
+}
