@@ -12,7 +12,9 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # DynamoDB Client
-dynamodb = boto3.client('dynamodb', region_name=os.getenv('AWS_REGION', 'us-east-1'))
+#dynamodb = boto3.client('dynamodb', region_name=os.getenv('AWS_REGION', 'us-east-1'))
+session = boto3.Session(profile_name='lab', region_name=os.getenv('AWS_REGION', 'us-east-1'))
+dynamodb = session.client('dynamodb')
 
 class User(UserMixin):
     def __init__(self, username, password):
@@ -22,15 +24,21 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(username):
+    scan_filter = """{
+    "username": {
+        "ComparisonOperator": "EQ",
+        "AttributeValueList": [{"S": "%s"}]
+    }
+}
+""" % (username)
+
     try:
-        response = dynamodb.get_item(
-            TableName='blackbox_lab_3',
-            Key={
-                'username': {'S': username}
-            }
+        response = dynamodb.scan(
+            TableName="blackbox_lab_3", 
+            ScanFilter=json.loads(scan_filter)
         )
-        if 'Item' in response:
-            item = response['Item']
+        if 'Items' in response:
+            item = response['Items'][0]
             return User(username=item['username']['S'], password=item['password']['S'])
     except Exception as e:
         print(e)
@@ -46,12 +54,6 @@ def login():
         }
         
         # Construct the DynamoDB query
-        
-        # Example exploit: {
-            # "username": "admin\"}, \"password\": {\"S\": {\"$ne\": \"\"}} #",
-            # "password": ""
-        # }
-        
         scan_filter = """{
     "username": {
         "ComparisonOperator": "EQ",
@@ -70,11 +72,11 @@ def login():
 
             # Check if the response contains an item
             if response.get('Items'):
-                user = User(username=response.get('Items')[0]["username"], password=response.get('Items')[0]["password"])
+                user = User(username=user_data['username'], password=user_data['password'])
                 login_user(user)
                 return redirect(url_for('administration'))
             else:
-                flash('Invalid credentials', 'danger')
+                flash(f'Invalid credentials. Query: {scan_filter}', 'danger')
         
         except Exception as e:
             return str(e) + '<br>\n' + f"query: {scan_filter}"
@@ -98,11 +100,12 @@ def config_view():
     path = request.args.get('path', 'file:///etc/training.conf')
     content = "Nothing to do..."
     
-    if path.startswith("http://"):
-        if not path.startswith('http://127.0.0.1/'):
+    if path.lower().startswith("http://") or path.lower().startswith("https://"):
+        if not path.startswith('http://localhost/'):
             content = "ERROR: This isn't a galactic feature. You can only access localhost files!"
+            return render_template('config.html', content=content)
     
-    if not path.startswith('file://'):
+    elif not path.startswith('file://'):
         path = 'file://' + path
     
     try:
