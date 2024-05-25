@@ -26,12 +26,12 @@ def load_user(username):
         response = dynamodb.get_item(
             TableName='blackbox_lab_3',
             Key={
-                'Username': {'S': username}
+                'username': {'S': username}
             }
         )
         if 'Item' in response:
             item = response['Item']
-            return User(username=item['Username']['S'], password=item['password']['S'])
+            return User(username=item['username']['S'], password=item['password']['S'])
     except Exception as e:
         print(e)
     return None
@@ -52,26 +52,32 @@ def login():
             # "password": ""
         # }
         
-        query_template = '''
-        {
-            "username": {"S": "%s"},
-            "password": {"S": "%s"}
-        }
-        ''' % (user_data['username'], user_data['password'])
+        scan_filter = """{
+    "username": {
+        "ComparisonOperator": "EQ",
+        "AttributeValueList": [{"S": "%s"}]
+    },
+    "password": {
+        "ComparisonOperator": "EQ",
+        "AttributeValueList": [{"S": "%s"}]
+    }
+}
+""" % (user_data['username'], user_data['password'])
         
         try:
-            response = dynamodb.get_item(
-                TableName='blackbox_lab_3',
-                Key=json.loads(query_template)
-            )
-            if 'Item' in response:
-                user = User(username=user_data['username'], password=user_data['password'])
+            # Perform the Query operation using the raw, unsanitized input
+            response = dynamodb.scan(TableName="blackbox_lab_3", ScanFilter=json.loads(scan_filter))
+
+            # Check if the response contains an item
+            if response.get('Items'):
+                user = User(username=response.get('Items')[0]["username"], password=response.get('Items')[0]["password"])
                 login_user(user)
                 return redirect(url_for('administration'))
             else:
                 flash('Invalid credentials', 'danger')
+        
         except Exception as e:
-            return str(e) + '<br>\n' + f"query: {query_template}"
+            return str(e) + '<br>\n' + f"query: {scan_filter}"
     
     return render_template('login.html')
 
