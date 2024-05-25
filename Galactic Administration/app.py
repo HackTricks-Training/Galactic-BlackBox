@@ -61,7 +61,7 @@ def login():
         
         try:
             response = dynamodb.get_item(
-                TableName='users',
+                TableName='blackbox_lab_3',
                 Key=json.loads(query_template)
             )
             if 'Item' in response:
@@ -71,7 +71,7 @@ def login():
             else:
                 flash('Invalid credentials', 'danger')
         except Exception as e:
-            return str(e) + '\n' + f"query: {query_template}"
+            return str(e) + '<br>\n' + f"query: {query_template}"
     
     return render_template('login.html')
 
