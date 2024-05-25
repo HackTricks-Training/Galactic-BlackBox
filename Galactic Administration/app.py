@@ -12,9 +12,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # DynamoDB Client
-#dynamodb = boto3.client('dynamodb', region_name=os.getenv('AWS_REGION', 'us-east-1'))
-session = boto3.Session(profile_name='lab', region_name=os.getenv('AWS_REGION', 'us-east-1'))
-dynamodb = session.client('dynamodb')
+dynamodb = boto3.client('dynamodb', region_name=os.getenv('AWS_REGION', 'us-east-1'))
 
 class User(UserMixin):
     def __init__(self, username, password):
