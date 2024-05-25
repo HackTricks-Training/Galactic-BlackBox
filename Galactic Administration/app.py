@@ -108,11 +108,14 @@ def config_view():
     
     try:
         cmd = "curl --output - -s " + path
-        content = subprocess.run(cmd.split(" "), capture_output=True, text=True).stdout
+        content = subprocess.run(cmd.split(" "), capture_output=True).stdout
     except Exception as e:
         content = str(e)
 
-    return render_template('config.html', content=content)
+    try:
+        return render_template('config.html', content=content)
+    except Exception as e:
+        return render_template('config.html', content=str(content))
 
 @app.route('/info')
 def info():
