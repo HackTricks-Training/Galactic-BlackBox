@@ -39,9 +39,11 @@ def load_user(username):
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Parse the raw JSON data from the request body
-        data = request.get_data(as_text=True)
-        user_data = json.loads(data)
+        # Parse the form data from the request body
+        user_data = {
+            'username': request.form.get('username'),
+            'password': request.form.get('password')
+        }
         
         # Construct the DynamoDB query
         
