@@ -4,6 +4,11 @@ FROM python:3.10-slim
 # Set the working directory
 WORKDIR /app
 
+# Install curl and other dependencies
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get clean
+
 # Copy the requirements.txt file
 COPY requirements.txt requirements.txt
 

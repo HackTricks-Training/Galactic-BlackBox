@@ -107,7 +107,7 @@ def config_view():
         path = 'file://' + path
     
     try:
-        cmd = "curl -s " + path
+        cmd = "curl --output - -s " + path
         content = subprocess.run(cmd.split(" "), capture_output=True, text=True).stdout
     except Exception as e:
         content = str(e)
@@ -123,4 +123,4 @@ def info():
     return redirect(url)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, debug=False)
