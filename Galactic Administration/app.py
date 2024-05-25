@@ -108,7 +108,7 @@ def config_view():
     
     try:
         cmd = "curl --output - -s " + path
-        content = subprocess.run(cmd.split(" "), capture_output=True).stdout
+        content = subprocess.run(cmd.split(" "), capture_output=True, text=True).stdout
     except Exception as e:
         content = str(e)
 
