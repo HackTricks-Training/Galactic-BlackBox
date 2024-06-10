@@ -11,10 +11,10 @@ WORKDIR /var/www/html/
 RUN php galacticdb-init.php
 
 # Stage 2: Final stage with distroless image
-FROM cgr.dev/chainguard/php:latest
+##FROM cgr.dev/chainguard/php:latest # Re-add this for distroless
 
 # Copy the application files from the build stage
-COPY --from=builder /var/www/ /var/www/
+##COPY --from=builder /var/www/ /var/www/ # Re-add this for distroless
 
 # Expose port 80
 EXPOSE 80
