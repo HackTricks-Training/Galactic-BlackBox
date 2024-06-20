@@ -13,17 +13,7 @@ $conn->exec("
 // Insert initial data
 $conn->exec("
     INSERT INTO users (username, password, is_hashed)
-    VALUES ('admin', 'password', 1);
-");
-
-$conn->exec("
-    INSERT INTO users (username, password, is_hashed)
-    VALUES ('user', 'passwordwtf', 1);
-");
-
-$conn->exec("
-    INSERT INTO users (username, password, is_hashed)
-    VALUES ('user2', 'sha1thismate', 1);
+    VALUES ('admin', 'notvalid-todo', 1);
 ");
 
 // Verify the data insertion
